@@ -1,0 +1,474 @@
+{
+  "name": "AI-Powered Lead Generation and Qualification with Calendar Booking",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Get Started - Request a Consultation",
+        "formDescription": "Tell us about your needs and we'll get back to you shortly",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Full Name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Email Address",
+              "fieldType": "email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Company Name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Company Size",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "1-10 employees"
+                  },
+                  {
+                    "option": "11-50 employees"
+                  },
+                  {
+                    "option": "51-200 employees"
+                  },
+                  {
+                    "option": "201-500 employees"
+                  },
+                  {
+                    "option": "500+ employees"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Tell us about your project or needs",
+              "fieldType": "textarea",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Budget Range",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Under $5,000"
+                  },
+                  {
+                    "option": "$5,000 - $15,000"
+                  },
+                  {
+                    "option": "$15,000 - $50,000"
+                  },
+                  {
+                    "option": "$50,000+"
+                  },
+                  {
+                    "option": "Not sure yet"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Timeline",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Urgent (within 1 month)"
+                  },
+                  {
+                    "option": "Soon (1-3 months)"
+                  },
+                  {
+                    "option": "Planning (3-6 months)"
+                  },
+                  {
+                    "option": "Exploring options"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": false,
+          "buttonLabel": "Submit Request",
+          "respondWithOptions": {
+            "values": {
+              "formSubmittedText": "Thank you! We've received your request and will be in touch soon."
+            }
+          }
+        }
+      },
+      "id": "14d94508-914d-4f41-987f-24788224cfc5",
+      "name": "Lead Generation Form",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        2944,
+        896
+      ],
+      "webhookId": "da8cff2b-e9ab-4d79-ae82-821b51d97a8b"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "highScoreThreshold",
+              "value": 70,
+              "type": "number"
+            },
+            {
+              "id": "id-2",
+              "name": "yourEmail",
+              "value": "prakash7418r@gmail.com",
+              "type": "string"
+            },
+            {
+              "id": "id-3",
+              "name": "calendarBookingLink",
+              "value": "https://cal.com/prakash-r-j6e1vx/prakash",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "850e6f80-4976-40e9-bde8-c3661d4d3ae4",
+      "name": "Workflow Configuration",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3168,
+        896
+      ]
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "TyvMR1OD9nnxoTMh",
+          "mode": "list",
+          "cachedResultName": "mytable",
+          "cachedResultUrl": "/projects/vzPNGrgrzYZ4JeQP/datatables/TyvMR1OD9nnxoTMh"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "FullName"
+          ],
+          "schema": [
+            {
+              "id": "FullName",
+              "displayName": "FullName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "2acd4deb-c294-4106-888f-c8f77a0a07ac",
+      "name": "Store Lead in Data Table",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        3616,
+        896
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are a lead qualification specialist. Your task is to analyze lead information from form submissions and assign a qualification score from 0-100.\n\nEvaluate leads based on:\n1. Budget Range (30 points): Higher budgets = higher scores\n2. Timeline Urgency (25 points): More urgent = higher scores\n3. Company Size (20 points): Larger companies typically = higher scores\n4. Project Description Quality (25 points): Detailed, specific needs = higher scores\n\nProvide:\n- score: A number from 0-100\n- reasoning: Brief explanation of the score\n- priority: \"high\", \"medium\", or \"low\"\n\nBe objective and consistent in your scoring."
+        }
+      },
+      "id": "85c2393c-7577-48ad-b95f-89bde839070a",
+      "name": "AI Lead Qualifier",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        3840,
+        896
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "id",
+          "value": "gpt-4o-mini"
+        },
+        "responsesApiEnabled": false,
+        "options": {}
+      },
+      "id": "147435b1-a2d2-463a-9945-83a935d01cee",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        3848,
+        1120
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "WejkZKAURdvp8ppM",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"score\": 85,\n\t\"reasoning\": \"Strong fit based on company size and budget\",\n\t\"priority\": \"high\"\n}"
+      },
+      "id": "ae95f641-3015-4ff8-a1f0-56a7ba8bc08a",
+      "name": "Structured Output Parser",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        3976,
+        1120
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ $json.output.score }}",
+              "rightValue": "={{ $('Workflow Configuration').first().json.highScoreThreshold }}",
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "33228e4b-e046-4ba1-b15d-9f507d2edb3e",
+      "name": "Check Lead Score",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4192,
+        896
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Workflow Configuration').first().json.yourEmail }}",
+        "subject": "=High-Priority Lead: {{ $('Lead Generation Form').first().json['Full Name'] }} from {{ $('Lead Generation Form').first().json['Company Name'] }}",
+        "message": "=<h2>High-Priority Lead Alert</h2>\n<p>A high-scoring lead has submitted the form. Here are the details:</p>\n\n<h3>Contact Information</h3>\n<ul>\n<li><strong>Name:</strong> {{ $('Lead Generation Form').first().json['Full Name'] }}</li>\n<li><strong>Email:</strong> {{ $('Lead Generation Form').first().json['Email Address'] }}</li>\n<li><strong>Company:</strong> {{ $('Lead Generation Form').first().json['Company Name'] }}</li>\n<li><strong>Company Size:</strong> {{ $('Lead Generation Form').first().json['Company Size'] }}</li>\n</ul>\n\n<h3>Project Details</h3>\n<ul>\n<li><strong>Budget Range:</strong> {{ $('Lead Generation Form').first().json['Budget Range'] }}</li>\n<li><strong>Timeline:</strong> {{ $('Lead Generation Form').first().json['Timeline'] }}</li>\n<li><strong>Project Description:</strong> {{ $('Lead Generation Form').first().json['Tell us about your project or needs'] }}</li>\n</ul>\n\n<h3>AI Qualification</h3>\n<ul>\n<li><strong>Score:</strong> {{ $json.output.score }}/100</li>\n<li><strong>Priority:</strong> {{ $json.output.priority }}</li>\n<li><strong>Reasoning:</strong> {{ $json.output.reasoning }}</li>\n</ul>\n\n<p><strong>Next Step:</strong> Consider reaching out to this lead promptly to schedule a consultation.</p>",
+        "options": {
+          "replyTo": "={{ $('Lead Generation Form').first().json['Email Address'] }}"
+        }
+      },
+      "id": "dad228c4-faf4-4e09-8be9-23d6a1fde293",
+      "name": "Send High-Score Lead Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        4416,
+        896
+      ],
+      "webhookId": "9afa0cee-c544-4a26-b4ad-86245ac799f8",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "AnouGrZUfYTNFZhi",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "full_name",
+              "value": "={{ $json['Full Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "email",
+              "value": "={{ $json['Email Address'] }}",
+              "type": "string"
+            },
+            {
+              "id": "id-3",
+              "name": "company_name",
+              "value": "={{ $json['Company Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "id-4",
+              "name": "company_size",
+              "value": "={{ $json['Company Size'] }}",
+              "type": "string"
+            },
+            {
+              "id": "id-5",
+              "name": "project_description",
+              "value": "={{ $json['Tell us about your project or needs'] }}",
+              "type": "string"
+            },
+            {
+              "id": "id-6",
+              "name": "budget_range",
+              "value": "={{ $json['Budget Range'] }}",
+              "type": "string"
+            },
+            {
+              "id": "id-7",
+              "name": "timeline",
+              "value": "={{ $json.Timeline }}",
+              "type": "string"
+            },
+            {
+              "id": "id-8",
+              "name": "submitted_at",
+              "value": "={{ $json.submittedAt }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4ba83a57-8cc5-4eaf-8d4e-b2ff1124627d",
+      "name": "Format Data for Table",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3392,
+        896
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Lead Generation Form": {
+      "main": [
+        [
+          {
+            "node": "Workflow Configuration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Lead in Data Table": {
+      "main": [
+        [
+          {
+            "node": "AI Lead Qualifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Lead Qualifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Lead Qualifier",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Lead Qualifier": {
+      "main": [
+        [
+          {
+            "node": "Check Lead Score",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Lead Score": {
+      "main": [
+        [
+          {
+            "node": "Send High-Score Lead Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Workflow Configuration": {
+      "main": [
+        [
+          {
+            "node": "Format Data for Table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Data for Table": {
+      "main": [
+        [
+          {
+            "node": "Store Lead in Data Table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1d317baa-57d1-4fa0-a698-ab308bc00b45",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ff16c540e626baf89db5fdbf781e2d1353b7ff3fe4e0d8f1af96b78c6f05e573"
+  },
+  "id": "gxsoS3Xq4ThAR4ox",
+  "tags": []
+}
